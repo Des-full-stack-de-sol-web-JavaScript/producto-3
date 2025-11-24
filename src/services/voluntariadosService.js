@@ -2,81 +2,91 @@ import { getDB } from '../config/mongo.js';
 import { ObjectId } from 'mongodb';
 
 /**
- * Función auxiliar para obtener la colección 'users'
+ * Función auxiliar para obtener la colección 'voluntariados'
  */
 function getCollection() {
-  return getDB().collection('users');
+  return getDB().collection('voluntariados');
 }
 
 /**
- * Devuelve todos los usuarios
- * @returns {Promise<Array>} Un array de todos los usuarios
+ * Devuelve todos los voluntariados de la BD
+ * @returns {Promise<Array>} Un array de todos los voluntariados
  */
-export async function getAllUsers() {
+export async function getAllVoluntariados() {
   try {
     return await getCollection().find({}).toArray();
   } catch (error) {
-    throw new Error(`Error al obtener usuarios: ${error.message}`);
+    throw new Error(`Error al obtener voluntariados: ${error.message}`);
   }
 }
 
 /**
- * Devuelve un usuario por su ID
- * @param {string} id - El ID del usuario
- * @returns {Promise<object|null>} El documento del usuario o null
+ * Devuelve un voluntariado por su ID
+ * @param {string} id - El ID del voluntariado
+ * @returns {Promise<object|null>} El documento del voluntariado o null
  */
-export async function getUserById(id) {
+export async function getVoluntariadoById(id) {
   try {
     if (!ObjectId.isValid(id)) {
       return null;
     }
     return await getCollection().findOne({ _id: new ObjectId(id) });
   } catch (error) {
-    throw new Error(`Error al obtener usuario por ID: ${error.message}`);
+    throw new Error(`Error al obtener voluntariado por ID: ${error.message}`);
   }
 }
 
 /**
- * Registra un nuevo usuario
- * @param {object} data - { nombre, email, password }
- * @returns {Promise<object>} El usuario recién creado
+ * Añade un nuevo voluntariado a la BD
+ * @param {object} data - Los datos del nuevo voluntariado
+ * @returns {Promise<object>} El voluntariado recién creado
  */
-export async function registrarUsuario(data) {
+export async function addVoluntariado(data) {
   try {
-    // Verificación de email duplicado
-    const existingUser = await getCollection().findOne({ email: data.email });
-    if (existingUser) {
-      throw new Error('El email ya está registrado.');
-    }
-
-    const nuevoUsuario = {
-      nombre: data.nombre,
-      email: data.email,
-      password: data.password, // En un proyecto real, esto debe ser un hash
-      rol: "usuario"
-    };
-
-    const result = await getCollection().insertOne(nuevoUsuario);
+    const result = await getCollection().insertOne(data);
     return await getCollection().findOne({ _id: result.insertedId });
   } catch (error) {
-    // Captura el error de 'email duplicado' o cualquier error de la BD
-    throw new Error(`Error al registrar usuario: ${error.message}`);
+    throw new Error(`Error al añadir voluntariado: ${error.message}`);
   }
 }
 
 /**
- * Elimina un usuario por su ID
- * @param {string} id - El ID del usuario
+ * Actualiza un voluntariado existente en la BD
+ * @param {string} id - El ID del voluntariado a actualizar
+ * @param {object} data - Los nuevos datos
+ * @returns {Promise<object|null>} El voluntariado actualizado o null
+ */
+export async function updateVoluntariado(id, data) {
+  try {
+    if (!ObjectId.isValid(id)) {
+      return null;
+    }
+
+    await getCollection().updateOne(
+      { _id: new ObjectId(id) },
+      { $set: data }
+    );
+    
+    return await getCollection().findOne({ _id: new ObjectId(id) });
+  } catch (error) {
+    throw new Error(`Error al actualizar voluntariado: ${error.message}`);
+  }
+}
+
+/**
+ * Elimina un voluntariado por su ID
+ * @param {string} id - El ID del voluntariado a eliminar
  * @returns {Promise<boolean>} True si se eliminó, false si no
  */
-export async function deleteUser(id) {
+export async function deleteVoluntariado(id) {
   try {
     if (!ObjectId.isValid(id)) {
       return false;
     }
+    
     const result = await getCollection().deleteOne({ _id: new ObjectId(id) });
     return result.deletedCount === 1;
   } catch (error) {
-    throw new Error(`Error al eliminar usuario: ${error.message}`);
+    throw new Error(`Error al eliminar voluntariado: ${error.message}`);
   }
 }
