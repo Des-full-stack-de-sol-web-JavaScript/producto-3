@@ -46,8 +46,12 @@ export const typeDefs = gql`
 
   # Operaciones de escritura
   type Mutation {
+<<<<<<< HEAD
+    registrarUsuario(nombre: String!, email: String!, password: String!): User
+=======
     login(email: String!, password: String!): AuthPayload!
     addUser(nombre: String!, email: String!, password: String!): User
+>>>>>>> 06ba3a1 (Implementación de Autenticación JWT: Se integran bcrypt para hashing de contraseñas y se protegen las mutaciones sensibles en GraphQL.)
     deleteUser(id: ID!): Boolean
 
     addVoluntariado(

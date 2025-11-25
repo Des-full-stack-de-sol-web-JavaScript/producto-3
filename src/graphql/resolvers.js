@@ -18,16 +18,6 @@ const checkAuth = (context) => {
   return true;
 };
 
-/**
- * Resolvers de GraphQL que conectan las Queries y Mutations
- * con la capa de servicios que accede a la base de datos.
- * 
- * Cada resolver sigue la estructura:
- * - parent: resultado del resolver padre
- * - args: argumentos recibidos en la Query/Mutation
- * - context: información global (auth, tokens, etc.)
- * - info: metadatos de la operación
- */
 export const resolvers = {
   /** 
   * Resolvers de consultas (Query)
