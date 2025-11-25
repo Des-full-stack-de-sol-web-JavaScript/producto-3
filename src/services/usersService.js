@@ -60,10 +60,14 @@ export async function registrarUsuario(data) {
       throw new Error('El email ya está registrado.');
     }
 
+    // Encriptamos la contraseña antes de guardarla
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(data.password, saltRounds);
+
     const nuevoUsuario = {
       nombre: data.nombre,
       email: data.email,
-      password: data.password, // En un proyecto real, esto debe ser un hash
+      password: hashedPassword,
       rol: "usuario"
     };
 
@@ -119,8 +123,8 @@ export async function loginUsuario(email, password) {
     }
 
     const { password: _, ...userWithoutPassword } = user;
-    
-    return userWithoutPassword; 
+
+    return userWithoutPassword;
   } catch (error) {
     throw new Error(`Error durante el inicio de sesión: ${error.message}`);
   }
