@@ -3,7 +3,7 @@ import * as VoluntariadoService from '../services/voluntariadosService.js';
 import jwt from 'jsonwebtoken';
 
 // Clave secreta para firmar los JWT. ¡DEBE SER UNA VARIABLE DE ENTORNO EN PRODUCCIÓN!
-const JWT_SECRET = 'SUPER_SECRETO_PARA_PRODUCTO3'; 
+const JWT_SECRET = 'SUPER_SECRETO_PARA_PRODUCTO3';
 
 /**
  * Función auxiliar para verificar la autenticación.
@@ -61,19 +61,19 @@ export const resolvers = {
    * Resolvers de Mutations (inserción, edición, borrado)
    */
   Mutation: {
-      /**
-     * Mutación para el inicio de sesión.
-     * 1. Llama a loginUsuario para verificar las credenciales.
-     * 2. Si es exitoso, genera un token JWT.
-     * @returns {Promise<object>} AuthPayload con token y user.
-     */
-    login: async (_, { email, password }) => { 
+    /**
+   * Mutación para el inicio de sesión.
+   * 1. Llama a loginUsuario para verificar las credenciales.
+   * 2. Si es exitoso, genera un token JWT.
+   * @returns {Promise<object>} AuthPayload con token y user.
+   */
+    login: async (_, { email, password }) => {
       const user = await UserService.loginUsuario(email, password);
 
       const token = jwt.sign(
-        { userId: user._id.toString(), email: user.email }, 
-        JWT_SECRET, 
-        { expiresIn: '1d' } 
+        { userId: user._id.toString(), email: user.email },
+        JWT_SECRET,
+        { expiresIn: '1d' }
       );
 
       return {
@@ -81,7 +81,7 @@ export const resolvers = {
         user
       };
     },
-    
+
     /**
      * Añade un usuario nuevo.
      * @param {object} args
@@ -108,6 +108,7 @@ export const resolvers = {
      * @returns {Promise<object>}
      */
     addVoluntariado: async (_, { titulo, email, fecha, descripcion, tipo }) => {
+      checAutkh(context);
       return await VoluntariadoService.addVoluntariado({ titulo, email, fecha, descripcion, tipo });
     },
     /**
@@ -118,7 +119,7 @@ export const resolvers = {
     * @returns {Promise<object|null>}
     */
     updateVoluntariado: async (_, { id, titulo, email, fecha, descripcion, tipo }, context) => {
-      checkAuth(context);
+      checAutkh(context);
       return await VoluntariadoService.updateVoluntariado(id, { titulo, email, fecha, descripcion, tipo });
     },
     /**
