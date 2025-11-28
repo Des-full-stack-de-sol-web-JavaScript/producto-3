@@ -3,7 +3,7 @@ import express from 'express';
 import cors from 'cors';
 import { ApolloServer } from '@apollo/server';
 import { expressMiddleware } from '@as-integrations/express5';
-import jwt from 'jsonwebtoken'; 
+import jwt from 'jsonwebtoken';
 
 import { connectDB } from './src/config/mongo.js';
 import { typeDefs } from './src/graphql/schema.js';
@@ -16,11 +16,11 @@ const JWT_SECRET = 'SUPER_SECRETO_PARA_PRODUCTO3';
  * @param {string} token - Token JWT del encabezado 'Authorization'.
  * @returns {string|null} - El userId extraído del token o null si es inválido/expirado.
  */
-function getAuthUserId(token) { 
+function getAuthUserId(token) {
   if (!token) {
     return null;
   }
-  
+
   const cleanToken = token.startsWith('Bearer ') ? token.slice(7, token.length) : token;
 
   try {
@@ -57,28 +57,28 @@ async function startServer() {
   });
 
 
-   await server.start();
+  await server.start();
 
   // Configuramos los middlewares de Express
   app.use(
     '/graphql',
     cors(),
     express.json(),
-    expressMiddleware(server, { // <-- Estructura corregida: server, { options }
-      /**
+    expressMiddleware(server, {
+      /**s
        * Context global de GraphQL.
        * Aquí se añade la autenticación leyendo el header 'Authorization'.
        */
       context: async ({ req }) => {
         // 1. Obtener el token del encabezado
-        const token = req.headers.authorization || ''; 
-        
+        const token = req.headers.authorization || '';
+
         // 2. Obtener el userId a partir del token decodificado
         const userId = getAuthUserId(token);
-        
-        return { 
+
+        return {
           // 3. Pasar el userId al contexto, lo usan los resolvers para 'checkAuth'
-          userId 
+          userId
         };
       },
     })

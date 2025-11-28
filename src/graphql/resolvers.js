@@ -107,8 +107,8 @@ export const resolvers = {
      * @param {object} args.input
      * @returns {Promise<object>}
      */
-    addVoluntariado: async (_, { titulo, email, fecha, descripcion, tipo }) => {
-      checAutkh(context);
+    addVoluntariado: async (_, { titulo, email, fecha, descripcion, tipo }, context) => {
+      checkAuth(context);
       return await VoluntariadoService.addVoluntariado({ titulo, email, fecha, descripcion, tipo });
     },
     /**
@@ -119,7 +119,7 @@ export const resolvers = {
     * @returns {Promise<object|null>}
     */
     updateVoluntariado: async (_, { id, titulo, email, fecha, descripcion, tipo }, context) => {
-      checAutkh(context);
+      checkAuth(context);
       return await VoluntariadoService.updateVoluntariado(id, { titulo, email, fecha, descripcion, tipo });
     },
     /**
